@@ -55,11 +55,12 @@ class CanvasGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      backgroundColor: "white",
+      backgroundColor: this.props.backgroundColor,
       currentColor: this.props.currentColor,
-      selectedTool: "pencil",
-      displayGrid: true,
-      data: array
+      selectedTool: this.props.selectedTool,
+      displayGrid: this.props.displayGrid,
+      data: this.props.data,
+      updatedData: this.props.updatedData
     };
   }
   static defaultProps = {
@@ -68,6 +69,74 @@ class CanvasGrid extends Component {
     selectedTool: "pencil",
     displayGrid: true,
     data: array
+  };
+
+  dropBucket = (data, dropIndex, color, initialColor, initialData) => {
+    let newData = [...data];
+
+    const topIndex = dropIndex - PIXEL_COUNT;
+    const bottomIndex = dropIndex + PIXEL_COUNT;
+    const leftIndex = dropIndex - 1;
+    const rightIndex = dropIndex + 1;
+
+    newData[dropIndex] = { color };
+
+    if (
+      topIndex >= 0 &&
+      newData[topIndex].color === initialColor &&
+      newData[topIndex].color !== color
+    ) {
+      newData = this.dropBucket(
+        newData,
+        topIndex,
+        color,
+        initialColor,
+        initialData
+      );
+    }
+
+    if (
+      bottomIndex < PIXEL_COUNT * PIXEL_COUNT &&
+      newData[bottomIndex].color === initialColor &&
+      newData[bottomIndex].color !== color
+    ) {
+      newData = this.dropBucket(
+        newData,
+        bottomIndex,
+        color,
+        initialColor,
+        initialData
+      );
+    }
+
+    if (
+      (leftIndex + 1) % PIXEL_COUNT !== 0 &&
+      newData[leftIndex].color === initialColor
+    ) {
+      newData = this.dropBucket(
+        newData,
+        leftIndex,
+        color,
+        initialColor,
+        initialData
+      );
+    }
+
+    if (
+      rightIndex % PIXEL_COUNT !== 0 &&
+      newData[rightIndex].color === initialColor &&
+      newData[rightIndex].color !== color
+    ) {
+      newData = this.dropBucket(
+        newData,
+        rightIndex,
+        color,
+        initialColor,
+        initialData
+      );
+    }
+
+    return newData;
   };
 
   updateCanvas = (evt, insets, headerHeight) => {
@@ -81,30 +150,30 @@ class CanvasGrid extends Component {
     const px = Math.trunc(tx / PIXEL_SIZE);
     const py = Math.trunc(ty / PIXEL_SIZE);
     const arrayPosition = py * PIXEL_COUNT + px;
-    if (arrayPosition + 1 > this.state.data.length || arrayPosition < 0) {
+    if (arrayPosition + 1 > this.props.data.length || arrayPosition < 0) {
       return;
     }
     if (
-      this.state.data[arrayPosition].color ===
-      (this.state.selectedTool === TOOLS.ERASER
+      this.props.data[arrayPosition].color ===
+      (this.props.selectedTool === TOOLS.ERASER
         ? "none"
         : this.props.currentColor)
     ) {
       return;
     }
-    let newData = this.state.data;
-    if (this.state.selectedTool === TOOLS.BUCKET) {
-      // newData = dropBucket(
-      //   newData,
-      //   arrayPosition,
-      //   currentColor,
-      //   data[arrayPosition].color,
-      //   newData
-      // );
+    let newData = this.props.data;
+    if (this.props.selectedTool === TOOLS.BUCKET) {
+      newData = this.dropBucket(
+        newData,
+        arrayPosition,
+        this.props.currentColor,
+        this.props.data[arrayPosition].color,
+        newData
+      );
     } else {
       newData[arrayPosition] = {
         color:
-          this.state.selectedTool === TOOLS.PENCIL
+          this.props.selectedTool === TOOLS.PENCIL
             ? this.props.currentColor
             : "none"
       };
@@ -112,6 +181,7 @@ class CanvasGrid extends Component {
     this.setState({
       data: newData
     });
+    this.props.updatedData([...newData]);
   };
 
   render() {
@@ -131,12 +201,12 @@ class CanvasGrid extends Component {
           onResponderTerminationRequest={() => true}
           onShouldBlockNativeResponder={() => true}
         >
-          {this.state.data.map((pixel, index) => (
+          {this.props.data.map((pixel, index) => (
             <PixelBlock
               key={index}
               index={index}
               backgroundColor={this.state.backgroundColor}
-              displayGrid={this.state.displayGrid}
+              displayGrid={this.props.displayGrid}
               color={pixel.color}
               style={{ borderColor: "#E5E5E5" }}
             />
@@ -157,8 +227,12 @@ export default function(props) {
         insets={insets}
         headerHeight={headerHeight}
         currentColor={props.currentColor}
+        backgroundColor={props.backgroundColor}
+        selectedTool={props.selectedTool}
+        displayGrid={props.displayGrid}
+        data={props.data}
+        updatedData={props.updateData}
       />
-      <Text>aaa{props.currentColor}</Text>
     </View>
   );
 }

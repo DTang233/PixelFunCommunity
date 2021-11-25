@@ -3,19 +3,23 @@ import { Button, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { TriangleColorPicker, fromHsv } from "react-native-color-picker";
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       newColor: "pink"
     };
   }
 
-  onColorChange(color) {
+  onColorChange(color, updateColorMap) {
     let newColor = fromHsv(color);
     this.setState({ newColor });
+    updateColorMap(newColor);
   }
 
   render() {
+    const { route, navigation } = this.props;
+    console.log(route.params);
+    const { updateColorMap } = route.params;
     return (
       <View style={styles.container}>
         <View style={{ flex: 1, padding: 45, backgroundColor: "#212021" }}>
@@ -30,7 +34,7 @@ class App extends React.Component {
 
           <TriangleColorPicker
             oldColor="white"
-            onColorChange={color => this.onColorChange(color)}
+            onColorChange={color => this.onColorChange(color, updateColorMap)}
             style={{ flex: 1 }}
           />
         </View>
