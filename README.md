@@ -2,11 +2,6 @@
 
 *Team members: Jiaxue Li, Ziming Jia, Di Tang*
 
-* **github link: https://github.com/Daisybiubiubiu/5520_final**
-
-* **Intro Vedio link: https://drive.google.com/file/d/13jt0acm-90GxTRRBfIZaRl2-UIJdlm6A/view?usp=sharing**
-
-
 
 [TOC]
 
