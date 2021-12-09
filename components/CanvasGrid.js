@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Text, StyleSheet, View, TextInput, Image, Button } from "react-native";
-import Slider from "@react-native-community/slider";
-import { Picker } from "@react-native-picker/picker";
-import { PanResponder } from "react-native";
+import {  StyleSheet, View, } from "react-native";
+
 import styled, { css } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -144,9 +141,8 @@ class CanvasGrid extends Component {
       return;
     }
     const tx = evt.nativeEvent.pageX - EDITOR_BORDER_SIZE;
-    // const ty =
-    //   evt.nativeEvent.pageY - EDITOR_BORDER_SIZE - HEADER_HEIGHT - insets.top;
-    const ty = evt.nativeEvent.pageY - EDITOR_BORDER_SIZE - headerHeight;
+
+    const ty = evt.nativeEvent.pageY - EDITOR_BORDER_SIZE - HEADER_HEIGHT;
     const px = Math.trunc(tx / PIXEL_SIZE);
     const py = Math.trunc(ty / PIXEL_SIZE);
     const arrayPosition = py * PIXEL_COUNT + px;

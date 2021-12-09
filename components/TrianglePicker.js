@@ -1,14 +1,16 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-import { TriangleColorPicker } from 'react-native-color-picker'
+import React from "react";
+import { View, Text } from "react-native";
+import { TriangleColorPicker } from "react-native-color-picker";
 
 export const ExampleUncontrolledTriangle = () => (
-  <View style={{flex: 1, padding: 45, backgroundColor: '#212021'}}>
-    <Text style={{color: 'white'}}>React Native Color Picker - Uncontrolled</Text>
+  <View style={{ flex: 1, padding: 45, backgroundColor: "#212021" }}>
+    <Text style={{ color: "white" }}>
+      React Native Color Picker - Uncontrolled
+    </Text>
     <TriangleColorPicker
-      oldColor='purple'
+      oldColor="purple"
       onColorSelected={color => alert(`Color selected: ${color}`)}
-      style={{flex: 1}}
+      style={{ flex: 1 }}
     />
   </View>
-)
+);
